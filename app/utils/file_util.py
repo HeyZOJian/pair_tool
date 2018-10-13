@@ -4,8 +4,16 @@ from app.config import members_info_path, history_path
 
 
 def get_members():
-    f = open(members_info_path, 'r')
-    return list(json.load(f)['members'])
+    last_solution = get_last_solution()
+    if last_solution:
+        members = [[],[]]
+        members[0] = [pair[0] for pair in last_solution]
+        members[1] = [pair[1] for pair in last_solution if len(pair)>1]
+        return members
+    else:
+        f = open(members_info_path, 'r')
+        members = list(json.load(f)['members'])
+        return [members[:7], members[7:]]
 
 def add_members(new_members):
     flag = False
@@ -15,7 +23,6 @@ def add_members(new_members):
         if new_member not in json_data['members']:
             flag = True
             json_data['members'].append(new_member)
-    print(json.dumps(json_data))
     f = open(members_info_path, 'w')
     f.write(json.dumps(json_data))
     f.close()
@@ -26,10 +33,8 @@ def delete_members(delete_members):
     json_data['members'] = list(get_members())
     print(json_data['members'])
     for delete_member in delete_members:
-        print(delete_member)
         if delete_member in json_data['members']:
              json_data['members'].remove(delete_member)
-    print(json.dumps(json_data))
     f = open(members_info_path, 'w')
     f.write(json.dumps(json_data))
     f.close()
@@ -43,8 +48,11 @@ def save_last_solution(solution):
 
 def get_last_solution():
     f = open(history_path,'r')
-    return list(json.load(f)['last_solution'])
+    if f is not None:
+        return list(json.load(f)['last_solution'])
+    return None
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    print(get_last_solution())
     # add_members(["Vito",])
     # delete_members(["Vito",])
