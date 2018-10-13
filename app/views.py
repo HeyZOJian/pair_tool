@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from app.service import *
-from app.utils.file_util import add_members, delete_members
+from app.utils.file_util import add_members, delete_members, get_all_members
 
 """
                 GET: 所有人随机分配
@@ -42,7 +42,7 @@ def assign_pair_randomly(request):
 @api_view(['GET','PUT', 'DELETE'])
 def user_view(request):
     if request.method == 'GET':
-        return Response(get_members())
+        return Response(get_all_members())
     elif request.method == 'PUT':
         print("======")
         members = request.data.get('members')
